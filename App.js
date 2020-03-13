@@ -2,15 +2,14 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, AsyncStorage, TextInput } from 'react-native';
 import j from './d.json';
 import { q } from './api';
-
-
+import diamond from './diamond';
 export default class App extends React.Component {
 
   constructor() {
     super()
     this.state = {
       weight: "",
-      height: "",
+      hight: "",
       age: "",
       BMR: "",
       BMI: "",
@@ -18,7 +17,7 @@ export default class App extends React.Component {
     }
     this.add = this.add.bind(this)
     this.get = this.get.bind(this)
-    this.cal_bmi = this.cal_bmi.bind(this)
+    this.analysis_body = this.analysis_body.bind(this)
   }
 
   add() {
@@ -26,32 +25,27 @@ export default class App extends React.Component {
   }
 
   get() {
-    console.log(this.state.weight)
-    this.setState({BMR: 66 + (13.7 * this.state.weight) + (5 * this.state.height) - (6.8 * this.state.age)});
-    this.setState({water: this.state.weight * 33});
-    
+    console.log(this.state.weight);
     // AsyncStorage.getItem('a').then(val => console.log(val));
     
   }
-  cal_bmi() {
-    console.log("bmi")
-    console.log(this.state.weight)
-    this.setState({BMI: this.state.weight / ( (this.state.height/100) * (this.state.height/100) ) });
-    
-    // AsyncStorage.getItem('a').then(val => console.log(val));
-    
+  analysis_body() {
+    this.setState({BMR: diamond.cal_bmr_diamond(this.state.weight ,this.state.hight ,this.state.age)});
+    this.setState({water: diamond.cal_water(this.state.weight)});
+    var ans = diamond.cal_bmi_diamond(this.state.weight ,this.state.hight);
+    this.setState({BMI: ans});
   }
 
-  onChangeheight(text) {
-    this.setState({height: +text});
+  onChangehight(text) {
+    this.setState({hight: text.replace(/[^.\d]/g,'')});
   }
   onChangeweight(text) {
-    // this.setState({weight: text.replace(/\D/g,'')});
-    this.setState({weight: +text});
+    this.setState({weight: text.replace(/[^.\d]/g,'')});
+    // this.setState({weight: +text});
   }
   onChangeage(text) {
-    // this.setState({weight: text.replace(/\D/g,'')});
-    this.setState({age: +text});
+    this.setState({age: text.replace(/[^.\d]/g,'')});
+    // this.setState({age: +text});
   }
 
 
@@ -67,8 +61,8 @@ export default class App extends React.Component {
           <TextInput
             name={"Hight: "}
             style={styles.textinput}
-            onChangeText={text => this.onChangeheight(text)}
-            value={""+this.state.height}
+            onChangeText={text => this.onChangehight(text)}
+            value={""+this.state.hight}
             keyboardType={'numeric'}
           />
           <Text>CM</Text>
@@ -96,8 +90,8 @@ export default class App extends React.Component {
           <Text>Year</Text>
         </View>
 
-        <Button title="Caculate BMR" onPress={this.get}/>
-        <Button title="Caculate BMI" onPress={this.cal_bmi}/>
+        
+        <Button title="Analysis Body" onPress={this.analysis_body}/>
       </View>
     );
   }
