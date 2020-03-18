@@ -3,8 +3,29 @@ import { StyleSheet, Text, View, Button, AsyncStorage, TextInput } from 'react-n
 import j from './d.json';
 import { q } from './api';
 import diamond from './diamond';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+function HomeScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Home Screen</Text>
+      <Button
+        title="Go to Details"
+        onPress={() => navigation.navigate('Details')}
+      />
+    </View>
+  );
+}
+
+
+
+const Stack = createStackNavigator();
+
+
 export default class App extends React.Component {
 
+  
   constructor() {
     super()
     this.state = {
@@ -18,8 +39,57 @@ export default class App extends React.Component {
     this.add = this.add.bind(this)
     this.get = this.get.bind(this)
     this.analysis_body = this.analysis_body.bind(this)
+    this.DetailsScreen = this.DetailsScreen.bind(this)
   }
 
+  DetailsScreen({ navigation }) {
+    return (
+      <View style={styles.container}>
+          
+      <Text>BMR is {+this.state.BMR}</Text>
+      <Text>BMI is {+this.state.BMI}</Text>
+      <Text>Water is {+this.state.water} ml.</Text>
+      <View style={awe.container}>
+        <Text>Hight is</Text>
+        <TextInput
+          name={"Hight: "}
+          style={styles.textinput}
+          onChangeText={text => this.onChangehight(text)}
+          value={""+this.state.hight}
+          keyboardType={'numeric'}
+        />
+        <Text>CM</Text>
+      </View>
+      <View style={awe.container}>
+        <Text>Weight is</Text>
+        <TextInput
+          name={"Weight: "}
+          style={styles.textinput}
+          onChangeText={text => this.onChangeweight(text)}
+          value={""+this.state.weight}
+          keyboardType={'numeric'}
+        />
+        <Text>Kilogram</Text>
+      </View>
+      <View style={awe.container}>
+        <Text>Age is</Text>
+        <TextInput
+          name={"Age: "}
+          style={styles.textinput}
+          onChangeText={text => this.onChangeage(text)}
+          value={""+this.state.age}
+          keyboardType={'numeric'}
+        />
+        <Text>Year</Text>
+      </View>
+  
+      
+      <Button title="Analysis Body" onPress={this.analysis_body}/>
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+        
+    </View>
+    );
+  }
   add() {
     AsyncStorage.setItem('a', '0');
   }
@@ -51,48 +121,12 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        
-        <Text>BMR is {+this.state.BMR}</Text>
-        <Text>BMI is {+this.state.BMI}</Text>
-        <Text>Water is {+this.state.water} ml.</Text>
-        <View style={awe.container}>
-          <Text>Hight is</Text>
-          <TextInput
-            name={"Hight: "}
-            style={styles.textinput}
-            onChangeText={text => this.onChangehight(text)}
-            value={""+this.state.hight}
-            keyboardType={'numeric'}
-          />
-          <Text>CM</Text>
-        </View>
-        <View style={awe.container}>
-          <Text>Weight is</Text>
-          <TextInput
-            name={"Weight: "}
-            style={styles.textinput}
-            onChangeText={text => this.onChangeweight(text)}
-            value={""+this.state.weight}
-            keyboardType={'numeric'}
-          />
-          <Text>Kilogram</Text>
-        </View>
-        <View style={awe.container}>
-          <Text>Age is</Text>
-          <TextInput
-            name={"Age: "}
-            style={styles.textinput}
-            onChangeText={text => this.onChangeage(text)}
-            value={""+this.state.age}
-            keyboardType={'numeric'}
-          />
-          <Text>Year</Text>
-        </View>
-
-        
-        <Button title="Analysis Body" onPress={this.analysis_body}/>
-      </View>
+      <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={this.DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
     );
   }
   
