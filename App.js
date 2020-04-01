@@ -134,7 +134,7 @@ export default class App extends React.Component {
   Alltime({ navigation }) {
     
     return (
-      <View style={styles.container}>
+      <View style={styles.Alltime2}>
         <FlatList
           data={this.state.lists}
           renderItem={({item}) => <Button title={item+""} onPress={() => navigation.navigate('compare', { key: item+"" })} />}
@@ -290,6 +290,13 @@ export default class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  Alltime2:{
+    flex: 1,
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -300,7 +307,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     // lineHeight: 200
   },
-  textinput: { height: 30, borderColor: 'blue', borderWidth: 2,width: 100}
+  textinput: { height: 30, borderColor: 'gray', borderWidth: 2,width: 100}
 });
 const awe = StyleSheet.create({
   container: {
