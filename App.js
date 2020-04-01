@@ -1,11 +1,12 @@
 import React from 'react';
-import { FlatList ,StyleSheet, Text, View, Button, AsyncStorage, TextInput } from 'react-native';
+import { FlatList ,StyleSheet, Text, View, Button, AsyncStorage, TextInput ,  Image, ScrollView, TouchableOpacity } from 'react-native';
 import j from './d.json';
 import { q } from './api';
 import diamond from './diamond';
+import ben from './ben';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import 'react-native-gesture-handler';
 import { ChonseSelect } from 'react-native-chonse-select';
 
 
@@ -20,9 +21,9 @@ export default class App extends React.Component {
     super()
     this.state = {
       Name: "",
-      weight: "",
-      high: "",
-      age: "",
+      weight: 0,
+      high: 0,
+      age: 1,
       BMR: "",
       BMI: "",
       Sex: "Male",
@@ -56,20 +57,25 @@ export default class App extends React.Component {
   }
   
   analysis_body() {
-    this.setState({BMR: diamond.cal_bmr_diamond(this.state.weight ,this.state.high ,this.state.age)});
-    this.setState({water: diamond.cal_water(this.state.weight)});
-    var ans = diamond.cal_bmi_diamond(this.state.weight ,this.state.high);
-    this.setState({BMI: ans});
+    var ans_bmr = diamond.diamond.cal_bmr_diamond(this.state.weight ,this.state.high ,this.state.age ,this.state.Sex);
+    this.setState({BMR: ans_bmr});
+    var ans_water = diamond.diamond.cal_water(this.state.weight)
+    this.setState({water: ans_water});
+    var ans_bmi = diamond.diamond.cal_bmi_diamond(this.state.weight ,this.state.high);
+    this.setState({BMI: ans_bmi});
     var time_now = new Date();
+    let lists = this.state.lists;
+    lists.push(time_now);
     alert(time_now);
 
-    let lists = this.state.lists;
-    lists.push(time_now+"");
+    
     this.setState({
          lists: lists
     })
     console.log(this.state.lists);
-    var obj = { weight: this.state.weight+"", high: this.state.high+"", age: this.state.age+"" };
+    var obj = { weight: this.state.weight+"", high: this.state.high+""
+              , age: this.state.age+"" ,Sex: this.state.age+""
+              , BMR: ans_bmr ,BMI: ans_bmi ,water: ans_water};
     var myJSON = JSON.stringify(obj);
     
     AsyncStorage.setItem(time_now+"",  myJSON);
@@ -121,6 +127,7 @@ export default class App extends React.Component {
           onPress={() => navigation.navigate('Details')}
         />
         <Button title="Alltime" onPress={() => navigation.push('Alltime')} />
+        <Button title="ben" onPress={() => navigation.push('ben')} />
       </View>
     );
   }
@@ -152,26 +159,31 @@ export default class App extends React.Component {
       </View>
     );
   }
-  compare2({ navigation}) {
+  compare2({ navigation ,route}) {
+    
+    
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text> Current     Old</Text>
         <Text> High  {this.state.high}  {this.state.compare.high}  </Text>
-        <Text> Weight  {this.state.weight}  {this.state.compare.high}  </Text>
-        <Text> Age  {this.state.age}  {this.state.compare.high}  </Text>
-        <Text> BMR  {this.state.BMR}  {diamond.cal_bmr_diamond(this.state.compare.weight ,this.state.compare.high ,this.state.compare.age)}  </Text>
-        <Text> BMI  {this.state.BMI}  {diamond.cal_bmi_diamond(this.state.compare.weight ,this.state.compare.high)}  </Text>
-        <Text> water  {this.state.water}  {diamond.cal_water(this.state.compare.weight )}  </Text>
-        
+        <Text> Weight  {this.state.weight}  {this.state.compare.weight}  </Text>
+        <Text> Age  {this.state.age}  {this.state.compare.age}  </Text>
+        <Text> BMR  {this.state.BMR}  {this.state.compare.BMR}  </Text>
+        <Text> BMI  {this.state.BMI}  {this.state.compare.BMI}  </Text>
+        <Text> water  {this.state.water}  {this.state.compare.water}  </Text>
+        <Text> day : {route.params?.day} hours : {route.params?.hours} ago</Text>
       </View>
       );
   }
   compare({ navigation ,route}) {
+    var ti_day = new Date().getDay() - new Date(route.params?.key).getDay()
+    var ti_hours = new Date().getHours() - new Date(route.params?.key).getHours()
     
+    // alert("Day :" + ti_day + " hours :" + ti_hours)
     AsyncStorage.getItem(route.params?.key).then(val => {
        this.setState({compare: JSON.parse(val)})
        console.log(this.state.compare)
-       navigation.replace('compare2')
+       navigation.replace('compare2' ,{ day: ti_day+"" ,hours: ti_hours+""})
        
     });
     
@@ -255,7 +267,9 @@ export default class App extends React.Component {
     </View>
     );
   }
-
+  // ben({ navigation}) {
+  //   ben.ben.HomeScreen(this.state.weight ,this.state.high)
+  // }
   render() {
     return (
       <NavigationContainer>
@@ -266,6 +280,8 @@ export default class App extends React.Component {
         <Stack.Screen name="Alltime" component={this.Alltime} />
         <Stack.Screen name="compare" component={this.compare} />
         <Stack.Screen name="compare2" component={this.compare2} />
+        <Stack.Screen name="ben" component={ben.ben.HomeScreen} />
+        
       </Stack.Navigator>
     </NavigationContainer>
     );
