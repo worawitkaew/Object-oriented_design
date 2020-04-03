@@ -19,6 +19,8 @@ export default class App extends React.Component {
   
   constructor() {
     super()
+   
+    
     this.state = {
       Name: "",
       weight: 0,
@@ -27,10 +29,12 @@ export default class App extends React.Component {
       BMR: "",
       BMI: "",
       Sex: "Male",
-      lists: [],
+      
+      lists:[],
       compare: "",
       water: ""
     }
+    
     this.add = this.add.bind(this)
     this.get = this.get.bind(this)
     this.analysis_body = this.analysis_body.bind(this)
@@ -40,6 +44,7 @@ export default class App extends React.Component {
     this.Alltime = this.Alltime.bind(this)
     this.compare = this.compare.bind(this)
     this.compare2 = this.compare2.bind(this)
+    this.clear = this.clear.bind(this)
     // this.onChangehight = this.onChangehight.bind(this)
     // this.onChangeweigh = this.onChangeweigh.bind(this)
     // this.HomeScreen = this.onChangeage.bind(this)
@@ -77,7 +82,8 @@ export default class App extends React.Component {
               , age: this.state.age+"" ,Sex: this.state.age+""
               , BMR: ans_bmr ,BMI: ans_bmi ,water: ans_water};
     var myJSON = JSON.stringify(obj);
-    
+    AsyncStorage.setItem("a",   lists+"");
+    //  JSON.stringify(lists)
     AsyncStorage.setItem(time_now+"",  myJSON);
     AsyncStorage.getItem(time_now+"").then(val => console.log(JSON.parse(val).weight));
   }
@@ -117,7 +123,18 @@ export default class App extends React.Component {
   }
   
   HomeScreen({ navigation }) {
-    
+    try{
+      var a;
+      AsyncStorage.getItem('a').then(contacts=> {
+        
+        a = JSON.parse(contacts)
+        this.setState({lists: a});
+        alert(a)
+       });
+      }catch{
+        a = []
+        this.setState({lists: a});
+      }
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>Home Screen</Text>
@@ -131,10 +148,20 @@ export default class App extends React.Component {
       </View>
     );
   }
-  Alltime({ navigation }) {
+  clear() {
+    // alert("asd")
+    // this.state.lists =  [];
+    AsyncStorage.setItem("a",  "[]");
+    this.setState({lists:[]});
     
+     
+        
+  }
+  Alltime({ navigation }) {
+   
     return (
       <View style={styles.container}>
+        <Button title="clear" onPress={() => this.clear()} />
         <FlatList
           data={this.state.lists}
           renderItem={({item}) => <Button title={item+""} onPress={() => navigation.navigate('compare', { key: item+"" })} />}
