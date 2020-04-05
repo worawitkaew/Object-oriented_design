@@ -2,8 +2,11 @@ import React from 'react';
 import { FlatList ,StyleSheet, Text, View, Button, AsyncStorage, TextInput ,  Image, ScrollView, TouchableOpacity } from 'react-native';
 import j from './d.json';
 import { q } from './api';
+
 import diamond from './diamond';
 import ben from './ben';
+import jom from './jom';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
@@ -40,26 +43,27 @@ export default class App extends React.Component {
     this.HomeScreen = this.HomeScreen.bind(this)
     this.Profile = this.Profile.bind(this)
     this.Alltime = this.Alltime.bind(this)
+    this.load_list= this.load_list.bind(this)
     this.compare = this.compare.bind(this)
-    this.compare2 = this.compare2.bind(this)
-    this.clear = this.clear.bind(this)
+    
   }
 
   
   analysis_body() {
     
-
-    var ans_bmr = diamond.diamond.cal_bmr_diamond(this.state.weight ,this.state.high ,this.state.age ,this.state.Sex);
+    // คำนวณ bmi bmr water
+    var ans_bmr = jom.jom.cal_bmr(this.state.weight ,this.state.high ,this.state.age ,this.state.Sex);
     this.setState({BMR: ans_bmr});
-    var ans_water = diamond.diamond.cal_water(this.state.weight)
+    var ans_water = jom.jom.cal_water(this.state.weight)
     this.setState({water: ans_water});
-    var ans_bmi = diamond.diamond.cal_bmi_diamond(this.state.weight ,this.state.high);
+    var ans_bmi = jom.jom.cal_bmi(this.state.weight ,this.state.high);
     this.setState({BMI: ans_bmi});
+
+    // เก็บเวลา
     var time_now = new Date();
     let lists = this.state.lists;
     lists.push(time_now);
-    // alert(time_now);
-
+   
     this.setState({
          lists: lists
     })
@@ -70,16 +74,16 @@ export default class App extends React.Component {
     
     var profile = { Name: this.state.Name, high: this.state.high
               ,weight: this.state.weight,age: this.state.age
-              ,bmr: ans_bmr ,bmi: ans_bmi
-              ,Sex:  this.state.Sex ,water:ans_water};
+              ,bmr: ans_bmr ,bmi: ans_bmi ,lists: JSON.stringify(lists)
+              ,Sex:  this.state.Sex ,water:ans_water };
   
     var myJSON = JSON.stringify(obj);
-    AsyncStorage.setItem("a",   JSON.stringify(lists));
-   
     AsyncStorage.setItem(time_now+"",  myJSON);
     AsyncStorage.getItem(time_now+"").then(val => console.log(JSON.parse(val).weight));
 
     AsyncStorage.setItem("profile", JSON.stringify(profile));
+
+    AsyncStorage.setItem("a", JSON.stringify(lists));
     alert("Save")
   }
 
@@ -120,7 +124,7 @@ export default class App extends React.Component {
       AsyncStorage.getItem("profile").then(val => {
         if(val != null){
 
-          // alert(val)
+         
         a = JSON.parse(val)
         
         this.setState({Name: a.Name});
@@ -131,7 +135,13 @@ export default class App extends React.Component {
         this.setState({BMI: a.bmi});
         this.setState({BMR: a.bmr});
         this.setState({water: a.water});
-        
+
+        if(a.lists != null){
+          this.setState({lists: JSON.parse(a.lists)});
+        }else{
+          this.setState({lists: []});
+        }
+         
         navigation.replace('Home')
         
         }else{
@@ -147,18 +157,7 @@ export default class App extends React.Component {
       );
   }
   HomeScreen({ navigation }) {
-    var a;
-    AsyncStorage.getItem('a').then(contacts=> {
-        if(contacts != null){
-          a = JSON.parse(contacts)
-          this.setState({lists: a});
-          // alert(contacts)
-        }else{
-          a = []
-          
-          this.setState({lists: a});
-        }
-      });
+    
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>Home Screen</Text>
@@ -167,30 +166,23 @@ export default class App extends React.Component {
           title="Filling health"
           onPress={() => navigation.navigate('Details')}
         />
-        <Button title="Alltime" onPress={() => navigation.push('Alltime')} />
+        <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
         <Button title="ben" onPress={() => navigation.push('ben')} />
       </View>
     );
   }
-  clear({ navigation }) {
-    // alert("asd")
-    // this.state.lists =  [];
-    AsyncStorage.clear().then(err=> {
-      this.setState({lists:[]})
+  load_list({ navigation }){
+    
+    AsyncStorage.getItem("a").then(val => {
+      
+      this.setState({lists: JSON.parse(val)});
       navigation.replace('Alltime')
     });
-    
-    // AsyncStorage.setItem("a",  "[]");
-    
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Loading</Text>
+        <Text>Load lists</Text>
       </View>
       );
-
-    
-     
-        
   }
   Alltime({ navigation }) {
    
@@ -199,7 +191,7 @@ export default class App extends React.Component {
         <Button title="clear" onPress={() => navigation.navigate("clear")} />
         <FlatList
           data={this.state.lists}
-          renderItem={({item}) => <Button title={item+""} onPress={() => navigation.navigate('compare', { key: new Date(item)+"" })} />}
+          renderItem={({item}) => <Button title={new Date(item)+""} onPress={() => navigation.navigate('compare', { key: new Date(item)+"" })} />}
         />
       </View>
     );
@@ -221,49 +213,24 @@ export default class App extends React.Component {
       </View>
     );
   }
-  compare2({ navigation ,route}) {
+  compare({ navigation ,route}) {
     
+    var temp = route.params?.key
     
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text> Current     Old</Text>
-        <Text> High  {this.state.high}  {this.state.compare.high}  </Text>
-        <Text> Weight  {this.state.weight}  {this.state.compare.weight}  </Text>
-        <Text> Age  {this.state.age}  {this.state.compare.age}  </Text>
-        <Text> BMR  {this.state.BMR}  {this.state.compare.BMR}  </Text>
-        <Text> BMI  {this.state.BMI}  {this.state.compare.BMI}  </Text>
-        <Text> water  {this.state.water}  {this.state.compare.water}  </Text>
-        <Text> Day : {route.params?.day} Hours : {route.params?.hours} Minutes : {route.params?.min} Seconds : {route.params?.sec} </Text>
+        <Text> High  {this.state.high}  {temp.high}  </Text>
+        <Text> Weight  {this.state.weight}  {temp.weight}  </Text>
+        <Text> Age  {this.state.age}  {temp.age}  </Text>
+        <Text> BMR  {this.state.BMR}  {temp.BMR}  </Text>
+        <Text> BMI  {this.state.BMI}  {temp.BMI}  </Text>
+        <Text> water  {this.state.water}  {temp.water}  </Text>
+        
       </View>
       );
   }
-  compare({ navigation ,route}) {
-    
-    var ti_day = new Date(route.params?.key).getDay()
-    var ti_hours = new Date(route.params?.key).getHours()
-    var ti_min = new Date(route.params?.key).getSeconds()
-    var ti_sec = new Date(route.params?.key).getMinutes()
-    // .getDay()+""
-    // .getHours()
-    // .getSeconds()
-    // .getMinutes()
-    // new Date().getMinutes()
-    
-    AsyncStorage.getItem(new Date(route.params?.key)+"").then(val => {
-      // alert(val)
-       this.setState({compare: JSON.parse(val)})
-       console.log(this.state.compare)
-       navigation.replace('compare2' ,{ day: ti_day+"" ,hours: ti_hours+"" ,min: ti_min,sec:ti_sec})
-       
-    });
-    
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Wait please</Text>
-      </View>
-      );
   
-  }
   DetailsScreen({ navigation }) {
     return (
       <View style={styles.container}>
@@ -344,14 +311,20 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
       <Stack.Navigator initialRouteName="load">
-        <Stack.Screen name="clear" component={this.clear} />
+        
+        <Stack.Screen name="loadlist" component={this.load_list} />
         <Stack.Screen name="load" component={this.loaddata} />
         <Stack.Screen name="Home" component={this.HomeScreen} />
         <Stack.Screen name="Details" component={this.DetailsScreen} />
         <Stack.Screen name="Profile" component={this.Profile} />
         <Stack.Screen name="Alltime" component={this.Alltime} />
-        <Stack.Screen name="compare" component={this.compare} />
-        <Stack.Screen name="compare2" component={this.compare2} />
+        <Stack.Screen name="compare2" component={this.compare} />
+
+        {/* diamond */}
+        <Stack.Screen name="compare" component={diamond.diamond.compare} />
+        <Stack.Screen name="clear" component={diamond.diamond.clear} />
+
+        {/* ben */}
         <Stack.Screen name="ben" component={ben.ben.HomeScreen} />
         
       </Stack.Navigator>
