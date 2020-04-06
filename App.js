@@ -6,7 +6,7 @@ import { q } from './api';
 import diamond from './diamond';
 import ben from './ben';
 import jom from './jom';
-
+import bo from'./bo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
@@ -168,6 +168,7 @@ export default class App extends React.Component {
         />
         <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
         <Button title="ben" onPress={() => navigation.push('ben')} />
+        {/* <Button title="bo" onPress={() => navigation.push('bo')} /> */}
       </View>
     );
   }
@@ -327,6 +328,7 @@ export default class App extends React.Component {
         {/* ben */}
         <Stack.Screen name="ben" component={ben.ben.HomeScreen} />
         
+
       </Stack.Navigator>
     </NavigationContainer>
     );
