@@ -1,12 +1,14 @@
 import React from 'react';
-import { FlatList ,StyleSheet, Text, View, Button, AsyncStorage, TextInput ,  Image, ScrollView, TouchableOpacity } from 'react-native';
+import {Platform, FlatList ,StyleSheet, Text, View, Button, AsyncStorage, TextInput ,  Image, ScrollView, TouchableOpacity,TouchableWithoutFeedback,TouchableHighlight } from 'react-native';
 import j from './d.json';
 import { q } from './api';
+
 
 import diamond from './diamond';
 import ben from './ben';
 import jom from './jom';
-import bo from'./bo';
+//import palm from './palm';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
@@ -16,8 +18,58 @@ import { ChonseSelect } from 'react-native-chonse-select';
 
 const Stack = createStackNavigator();
 
+//BUTTON CODE//*************************************************
+export class Touchables extends React.Component {
+  _onPressButton() {
+    alert('You tapped the button!')
+  }
+
+  _onLongPressButton() {
+    alert('You long-pressed the button!')
+  }
+
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <TouchableHighlight onPress={this._onPressButton} underlayColor="white">
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>TouchableHighlight</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableOpacity onPress={this._onPressButton}>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>TouchableOpacity</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableNativeFeedback
+            onPress={this._onPressButton}
+            background={Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''}>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>TouchableNativeFeedback {Platform.OS !== 'android' ? '(Android only)' : ''}</Text>
+          </View>
+        </TouchableNativeFeedback>
+        <TouchableWithoutFeedback
+            onPress={this._onPressButton}
+            >
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>TouchableWithoutFeedback</Text>
+          </View>
+        </TouchableWithoutFeedback>
+        <TouchableHighlight onPress={this._onPressButton} onLongPress={this._onLongPressButton} underlayColor="white">
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Touchable with Long Press</Text>
+          </View>
+        </TouchableHighlight>
+      </View>
+    );
+  }
+}
+
+//MAIN CODE//**************************************************************************************************
 
 export default class App extends React.Component {
+    
 
   
   constructor() {
@@ -149,27 +201,29 @@ export default class App extends React.Component {
         }
         
       });
-    
+  
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Loading</Text>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text >Loading</Text>
       </View>
       );
   }
   HomeScreen({ navigation }) {
     
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
+    
+        //<Text>Your health</Text>
+    
+      <View style={{flex: 1,backgroundColor: '#044882',alignItems: 'center',justifyContent: 'center',margin: 10,}}>
+      <Text style={{color:'white',fontSize:30}}>Main Menu</Text>
+      <Button style={theme} title="GET STARTED" onPress={() => navigation.navigate('Details')}/>
+      
+       </View>
+      /* <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
+        <Button title="BEN MENU" onPress={() => navigation.push('ben')} />*/
+      
        
-        <Button
-          title="Filling health"
-          onPress={() => navigation.navigate('Details')}
-        />
-        <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
-        <Button title="ben" onPress={() => navigation.push('ben')} />
-        {/* <Button title="bo" onPress={() => navigation.push('bo')} /> */}
-      </View>
+     
     );
   }
   load_list({ navigation }){
@@ -204,9 +258,9 @@ export default class App extends React.Component {
         <Text>Your health</Text>
         <Text>Name {this.state.Name}</Text>
         <Text>Sex {this.state.Sex}</Text>
-        <Text>High {+this.state.high} CM</Text>
+        <Text>Height {+this.state.high} CM</Text>
         <Text>Weight {+this.state.weight} Kilogram</Text>
-        <Text>Age is {+this.state.age}</Text>
+        <Text>Age {+this.state.age}</Text>
         <Text>BMR is {+this.state.BMR}</Text>
         <Text>BMI is {+this.state.BMI}</Text>
         <Text>Water is {+this.state.water} ml.</Text>
@@ -237,7 +291,7 @@ export default class App extends React.Component {
       <View style={styles.container}>
 
       <View style={awe.container}>
-        <Text>Name :</Text>
+        <Text>Name: </Text>
         <TextInput
           style={styles.textinput}
           onChangeText={text =>  this.setState({Name: text})}
@@ -246,7 +300,7 @@ export default class App extends React.Component {
 
        <ChonseSelect
         height={35}
-        style={{ marginLeft: 20, marginBottom: 10 }}
+        style={{ marginLeft: 1, marginBottom: 1 }}
         data={[
           {
             value:'Male',
@@ -262,7 +316,7 @@ export default class App extends React.Component {
       />
       
       <View style={awe.container}>
-        <Text>High is</Text>
+        <Text>Height: </Text>
         <TextInput
           name={"High: "}
           style={styles.textinput}
@@ -271,22 +325,23 @@ export default class App extends React.Component {
           keyboardType={'numeric'}
           
         />
-        <Text>CM</Text>
+        <Text> Centimetre</Text>
       </View>
       <View style={awe.container}>
-        <Text>Weight is</Text>
+        <Text >Weight: </Text>
         <TextInput
           name={"Weight: "}
+      
           style={styles.textinput}
           onChangeText={text => this.onChangeweight(text)}
           // value={""+this.state.weight}
           keyboardType={'numeric'}
           
         />
-        <Text>Kilogram</Text>
+        <Text> Kilogram</Text>
       </View>
       <View style={awe.container}>
-        <Text>Age is</Text>
+        <Text>Age: </Text>
         <TextInput
           name={"Age: "}
           style={styles.textinput}
@@ -295,13 +350,20 @@ export default class App extends React.Component {
           keyboardType={'numeric'}
           
         />
-        <Text>Year</Text>
+        <Text> Years</Text>
+   
       </View>
-  
       
-      <Button title="Save" onPress={this.analysis_body}/>
+     
+      
+  
+      <View style={styles.button_Go}>
+      
+      <Button title="Go" onPress={this.analysis_body}/>
+      </View>
+      <View style={styles.button_Go}>
       <Button title="See your health" onPress={() => navigation.push('Profile')} />
-        
+         </View>
     </View>
     );
   }
@@ -328,7 +390,8 @@ export default class App extends React.Component {
         {/* ben */}
         <Stack.Screen name="ben" component={ben.ben.HomeScreen} />
         
-
+        
+        
       </Stack.Navigator>
     </NavigationContainer>
     );
@@ -336,31 +399,60 @@ export default class App extends React.Component {
   
 }
 
+//**************************************************************************************************
+//CSS COLOR STYLE
 const styles = StyleSheet.create({
+     button_Go: {
+    width: '40%',
+    
+    padding: 2,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#044882',
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 8,
   },
   text: {
     fontStyle: 'italic',
+    color: 'white'
     // lineHeight: 200
   },
-  textinput: { height: 30, borderColor: 'blue', borderWidth: 2,width: 100}
+  textinput: { color:'white',height: 30, borderColor: 'white', borderWidth: 2,width: 100}
 });
 const awe = StyleSheet.create({
   container: {
     flexDirection: "row",
     flex: 0,
-    backgroundColor: '#fff',
+    backgroundColor: '#044882',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 5,
+    margin: 8,
+ 
   },
+  
   text: {
     fontStyle: 'italic',
+    color:'white'
     // lineHeight: 200
   }
 });
 
+const theme = StyleSheet.create({
+  container: {
+    paddingTop: 60,
+    alignItems: 'center'
+  },
+  button: {
+    marginBottom: 30,
+    width: 260,
+    alignItems: 'center',
+    backgroundColor: 'black'
+  },
+  buttonText: {
+    textAlign: 'center',
+    padding: 20,
+    color: 'white'
+  }
+});
