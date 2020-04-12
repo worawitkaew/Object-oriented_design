@@ -1,0 +1,1 @@
+'https://wger.de/api/v2/exerciseinfo/?format=json&?language=1'

@@ -1,6 +1,7 @@
 import React from 'react';
 import {  Text, View, AsyncStorage } from 'react-native';
 class calculator extends React.Component {
+ 
   clear({ navigation }) {
     
     AsyncStorage.clear()

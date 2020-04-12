@@ -1,11 +1,12 @@
 import React from 'react';
-import {Platform, FlatList ,StyleSheet, Text, View, Button, AsyncStorage, TextInput ,  Image, ScrollView, TouchableOpacity,TouchableWithoutFeedback,TouchableHighlight } from 'react-native';
+import {Platform, FlatList ,ActivityIndicator,StyleSheet, Text, View, Button, AsyncStorage, TextInput ,  Image, ScrollView, TouchableOpacity,TouchableWithoutFeedback,TouchableHighlight } from 'react-native';
 import j from './d.json';
 import { q } from './api';
 
 
 import diamond from './diamond';
 import ben from './ben';
+import boss from './boss';
 import jom from './jom';
 //import palm from './palm';
 
@@ -72,8 +73,8 @@ export default class App extends React.Component {
     
 
   
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     // AsyncStorage.clear();
     // AsyncStorage.setItem("a", '[]');
     this.state = {
@@ -84,10 +85,13 @@ export default class App extends React.Component {
       BMR: "",
       BMI: "",
       Sex: "Male",
-      
       lists:[],
       compare: "",
-      water: ""
+      water: "",
+
+      // Boss
+      loading:false,
+      dataSource:null
     }
     this.loaddata = this.loaddata.bind(this)
     this.analysis_body = this.analysis_body.bind(this)
@@ -98,9 +102,26 @@ export default class App extends React.Component {
     this.load_list= this.load_list.bind(this)
     this.compare = this.compare.bind(this)
     
+    
   }
-
   
+  // API-Boss
+  componentDidMount() {
+    // return fetch('https://facebook.github.io/react-native/movies.json')
+    return fetch('https://wger.de/api/v2/exerciseinfo/?format=json&?language=1')
+    .then( (response) => response.json() )
+    .then( (responseJson) => {
+        this.setState({
+            loading: false,
+            // dataSource: responseJson.movies,
+            dataSource: responseJson.results
+            // dataSource: responseJson
+        })
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+}
   analysis_body() {
     
     // คำนวณ bmi bmr water
@@ -217,7 +238,12 @@ export default class App extends React.Component {
       <View style={{flex: 1,backgroundColor: '#044882',alignItems: 'center',justifyContent: 'center',margin: 10,}}>
       <Text style={{color:'white',fontSize:30}}>Main Menu</Text>
       <Button style={theme} title="GET STARTED" onPress={() => navigation.navigate('Details')}/>
-      
+      <Text></Text>
+      <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
+      <Text></Text>
+      <Button title="BEN MENU" onPress={() => navigation.push('ben')} />
+      <Text></Text>
+      <Button title="boss" onPress={() => navigation.push('boss',{key:this.state.dataSource})} />
        </View>
       /* <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
         <Button title="BEN MENU" onPress={() => navigation.push('ben')} />*/
@@ -351,12 +377,7 @@ export default class App extends React.Component {
           
         />
         <Text> Years</Text>
-   
       </View>
-      
-     
-      
-  
       <View style={styles.button_Go}>
       
       <Button title="Go" onPress={this.analysis_body}/>
@@ -367,10 +388,17 @@ export default class App extends React.Component {
     </View>
     );
   }
-  // ben({ navigation}) {
-  //   ben.ben.HomeScreen(this.state.weight ,this.state.high)
-  // }
+ 
   render() {
+    // LOAD API just wait
+    if(this.state.loading){
+      return(
+        <View>
+            <ActivityIndicator />
+        </View>
+      )
+    }else{
+
     return (
       <NavigationContainer>
       <Stack.Navigator initialRouteName="load">
@@ -389,12 +417,18 @@ export default class App extends React.Component {
 
         {/* ben */}
         <Stack.Screen name="ben" component={ben.ben.HomeScreen} />
+
+        {/* boss */}
+        
+        <Stack.Screen name="boss" component={boss.boss.boss} />
+       
         
         
         
       </Stack.Navigator>
     </NavigationContainer>
     );
+    }
   }
   
 }
