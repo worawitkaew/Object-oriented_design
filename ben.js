@@ -19,7 +19,7 @@ class calculator extends React.Component {
                 </TouchableOpacity>
               </View>
               <Text style={{
-                colors: 'black',
+                color: 'black',
                 fontWeight: 'bold',
                 fontSize: 40,
                 backgroundColor: '#d7d5d2',
@@ -65,7 +65,7 @@ class calculator extends React.Component {
                   <Image
                     source={{ uri: 'https://reactnative.dev/docs/assets/p_cat1.png' }}
                     // style={{ width: 50, height: 50, backgroundColor:'white', position:'absolute',alignSelf:'flex-end',top:500,right:20}} />
-                    style={{ width: 50, height: 50 }} />
+                    style={{  width: 60, height: 50}} />
                 </TouchableOpacity>
               </View>
       

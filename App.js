@@ -2,13 +2,15 @@ import React from 'react';
 import {Platform, FlatList ,ActivityIndicator,StyleSheet, Text, View, Button, AsyncStorage, TextInput ,  Image, ScrollView, TouchableOpacity,TouchableWithoutFeedback,TouchableHighlight } from 'react-native';
 import j from './d.json';
 import { q } from './api';
+import 'react-native-gesture-handler';
 
 
 import diamond from './diamond';
 import ben from './ben';
 import boss from './boss';
 import jom from './jom';
-//import palm from './palm';
+import palm from './palm';
+
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -229,27 +231,112 @@ export default class App extends React.Component {
       </View>
       );
   }
+
+  // HOME SCREEN NAVIGATOR MENU
+
   HomeScreen({ navigation }) {
     
     return (
-    
-        //<Text>Your health</Text>
-    
-      <View style={{flex: 1,backgroundColor: '#044882',alignItems: 'center',justifyContent: 'center',margin: 10,}}>
-      <Text style={{color:'white',fontSize:30}}>Main Menu</Text>
-      <Button style={theme} title="GET STARTED" onPress={() => navigation.navigate('Details')}/>
-      <Text></Text>
-      <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
-      <Text></Text>
-      <Button title="BEN MENU" onPress={() => navigation.push('ben')} />
-      <Text></Text>
-      <Button title="boss" onPress={() => navigation.push('boss',{key:this.state.dataSource})} />
-       </View>
-      /* <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
-        <Button title="BEN MENU" onPress={() => navigation.push('ben')} />*/
+      <>
       
-       
+      <View style={{ flex:1, flexDirection: 'column', width: '100%', height: '100%', backgroundColor: '#0f4c81', marginTop: 1}} >
      
+                 <Text style={{textAlign: 'center',fontWeight: 'bold',fontSize:22,color:'white',marginBottom:'5%',marginTop:'5%'}}>Main Menu</Text>
+                
+              
+
+                 
+                   <TouchableOpacity onPress={() => navigation.navigate('Details')} I  
+                   style={{  width: '100%', height: '20%'}} >
+                       <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/get-started.png?alt=media&token=edd89306-c748-454c-a689-4b9b2f2d7758' }}
+                    style={{  width: '100%', height: '100%'}} />
+                     
+                 </TouchableOpacity>
+
+                 <TouchableOpacity onPress={() => navigation.push('ben')} I  
+                   style={{  width: '100%', height: '20%'}} >
+                      <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/food-menu.png?alt=media&token=b763f331-7a6b-46df-ac8f-33521735d1d4' }}
+                    style={{  width: '100%', height: '100%'}} />
+                     
+                 </TouchableOpacity>
+
+                 <TouchableOpacity onPress={() => navigation.push('boss',{key:this.state.dataSource})} I  
+                   style={{  width: '100%', height: '20%'}} >
+                      <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/exercise-menu.png?alt=media&token=811541d7-af20-4193-8709-7618eabb7fea' }}
+                    style={{  width: '100%', height: '100%'}} />
+                     
+                 </TouchableOpacity>
+                 <TouchableOpacity onPress={() => navigation.navigate('palm')} I  
+                   style={{  width: '100%', height: '20%'}} >
+                      <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/overview-menu.png?alt=media&token=ec3fda6a-b314-4205-b2bd-35bb3cdd97d9' }}
+                    style={{  width: '100%', height: '100%'}} />
+                    
+                     
+                 </TouchableOpacity>
+                 <TouchableOpacity onPress={() => navigation.push('loadlist')} I  
+                   style={{  width: '100%', height: '20%'}} >
+                      <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/history-menu.png?alt=media&token=b83f4a09-06cc-4e6a-aca6-3ff079aa9196' }}
+                    style={{  width: '100%', height: '100%'}} />
+                     
+                 </TouchableOpacity>
+                 
+                
+                
+               
+
+                {/* <Image <View style={{ width: '100%', height: '20%', backgroundColor: 'red' }} />
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/get-started.png?alt=media&token=edd89306-c748-454c-a689-4b9b2f2d7758' }}
+                    style={{  width: '100%', height: '20%',alignContent:'center', backgroundColor: 'red'}} /> */}
+
+                
+
+                {/*   <TouchableOpacity onPress={() => navigation.push('ben')}>
+                  <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/food-menu.png?alt=media&token=b763f331-7a6b-46df-ac8f-33521735d1d4' }}
+                    style={{  width: '100%', height: '40%'}} />
+                </TouchableOpacity>
+                
+                
+                
+                
+                
+                
+                <TouchableOpacity onPress={() => navigation.push('ben')}>
+                  <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/food-menu.png?alt=media&token=b763f331-7a6b-46df-ac8f-33521735d1d4' }}
+                    // style={{ width: 50, height: 50, backgroundColor:'white', position:'absolute',alignSelf:'flex-end',top:500,right:20}} />
+                    style={{  width: '100%', height: '100%',top:0,alignItems:'center',position: 'relative'}} />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => navigation.push('ben')}>
+                  <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/exercise-menu.png?alt=media&token=811541d7-af20-4193-8709-7618eabb7fea' }}
+                    // style={{ width: 50, height: 50, backgroundColor:'white', position:'absolute',alignSelf:'flex-end',top:500,right:20}} />
+                    style={{  width: '100%', height: '100%',top:0,alignItems:'center',position: 'relative'}} />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => navigation.navigate('Details')}>
+                  <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/get-started.png?alt=media&token=edd89306-c748-454c-a689-4b9b2f2d7758' }}
+                    // style={{ width: 50, height: 50, backgroundColor:'white', position:'absolute',alignSelf:'flex-end',top:500,right:20}} />
+                    style={{  width: '100%', height: '100%',top:0,alignItems:'center',position: 'relative'}} />
+                </TouchableOpacity> */}
+                 
+              </View>
+             
+             
+      
+      </>
+              
+     
+              
+      
+   
     );
   }
   load_list({ navigation }){
@@ -421,6 +508,9 @@ export default class App extends React.Component {
         {/* boss */}
         
         <Stack.Screen name="boss" component={boss.boss.boss} />
+        {/*Palm Page */}
+
+        <Stack.Screen name="palm" component={palm.palm.HomeScreen} />
        
         
         
