@@ -2,13 +2,15 @@ import React from 'react';
 import {Platform, FlatList ,ActivityIndicator,StyleSheet, Text, View, Button, AsyncStorage, TextInput ,  Image, ScrollView, TouchableOpacity,TouchableWithoutFeedback,TouchableHighlight } from 'react-native';
 import j from './d.json';
 import { q } from './api';
+import 'react-native-gesture-handler';
 
 
 import diamond from './diamond';
 import ben from './ben';
 import boss from './boss';
 import jom from './jom';
-//import palm from './palm';
+import palm from './palm';
+
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -90,12 +92,8 @@ export default class App extends React.Component {
       water: "",
 
       // Boss
-      loading:true,
-      dataSource:null,
-
-      //Ben
-      foodLoad:true,
-      foodData:null,
+      loading:false,
+      dataSource:null
     }
     this.loaddata = this.loaddata.bind(this)
     this.analysis_body = this.analysis_body.bind(this)
@@ -104,65 +102,29 @@ export default class App extends React.Component {
     this.Profile = this.Profile.bind(this)
     this.Alltime = this.Alltime.bind(this)
     this.load_list= this.load_list.bind(this)
-    this.compare = this.compare.bind(this)
+    
+    
     
     
   }
   
   // API-Boss
-//   componentDidMount() {
-//     // return fetch('https://facebook.github.io/react-native/movies.json')
-//     return fetch('https://wger.de/api/v2/exerciseinfo/?format=json&?language=1')
-//     .then( (response) => response.json() )
-//     .then( (responseJson) => {
-//         this.setState({
-//             loading: false,
-//             // dataSource: responseJson.movies,
-//             dataSource: responseJson.results
-//             // dataSource: responseJson
-//         })
-//     })
-//     .catch((error) => {
-//         console.log(error)
-//     });
-// }
-
-componentDidMount() {
-  var boss='https://wger.de/api/v2/exerciseinfo/?format=json&?language=1'
-  var ben='https://api.nal.usda.gov/fdc/v1/foods/search?api_key=MZGVt2a6IE7qhdJafDftmtlupEVa5hcoTtnQ2YnL&query='
-
-  fetch(boss).then( (response) => response.json()).then( (responseJson) => {
-      this.setState({
-          loading: false,
-          dataSource: responseJson.results
-      })
-  })
-  .then(()=>{
-    fetch(ben).then( (response) => response.json()).then( (responseJson) => {
-      this.setState({
-        foodLoad: false,
-        foodData: responseJson.foods
-      })
-    }).done();
-  }).done();
+  componentDidMount() {
+    // return fetch('https://facebook.github.io/react-native/movies.json')
+    return fetch('https://wger.de/api/v2/exerciseinfo/?format=json&?language=1')
+    .then( (response) => response.json() )
+    .then( (responseJson) => {
+        this.setState({
+            loading: false,
+            // dataSource: responseJson.movies,
+            dataSource: responseJson.results
+            // dataSource: responseJson
+        })
+    })
+    .catch((error) => {
+        console.log(error)
+    });
 }
-
-
-// componentDidMount_BEN() {
-//   // return fetch('https://facebook.github.io/react-native/movies.json')
-//   return fetch('https://api.nal.usda.gov/fdc/v1/foods/search?api_key=MZGVt2a6IE7qhdJafDftmtlupEVa5hcoTtnQ2YnL&query=')
-//   .then( (response) => response.json() )
-//   .then( (responseJson) => {
-//       this.setState({
-//           foodLoad: false,
-//           // dataSource: responseJson.movies,
-//           foodData: responseJson.foods
-//           // dataSource: responseJson
-//       })
-//   })
-//   .catch((error) => {
-//       console.log(error)
-//   });}
 
   analysis_body() {
     
@@ -271,27 +233,63 @@ componentDidMount() {
       </View>
       );
   }
+
+  // HOME SCREEN NAVIGATOR MENU
+
   HomeScreen({ navigation }) {
     
     return (
-    
-        //<Text>Your health</Text>
-    
-      <View style={{flex: 1,backgroundColor: '#044882',alignItems: 'center',justifyContent: 'center',margin: 10,}}>
-      <Text style={{color:'white',fontSize:30}}>Main Menu</Text>
-      <Button style={theme} title="GET STARTED" onPress={() => navigation.navigate('Details')}/>
-      <Text></Text>
-      <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
-      <Text></Text>
-      <Button title="BEN MENU" onPress={() => navigation.push('ben_food',{key:this.state.foodData})} />
-      <Text></Text>
-      <Button title="boss" onPress={() => navigation.push('boss',{key:this.state.dataSource})} />
-       </View>
-      /* <Button title="Alltime" onPress={() => navigation.push('loadlist')} />
-        <Button title="BEN MENU" onPress={() => navigation.push('ben')} />*/
+      <>
       
-       
-     
+      <View style={{ flex:1, flexDirection: 'column', width: '100%', height: '100%', backgroundColor: '#0f4c81', marginTop: 1}} >
+             
+                 {/* <Text style={{textAlign: 'center',fontWeight: 'bold',fontSize:22,color:'white',marginBottom:'5%',marginTop:'5%'}}>Main Menu</Text> */}
+                
+              
+
+                 
+                   <TouchableOpacity onPress={() => navigation.navigate('Details')} I  
+                   style={{  width: '100%', height: '20%'}} >
+                       <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/get-started.png?alt=media&token=edd89306-c748-454c-a689-4b9b2f2d7758' }}
+                    style={{  width: '100%', height: '100%'}} />
+                     
+                 </TouchableOpacity>
+                 
+                 <TouchableOpacity onPress={() => navigation.push('ben')} I  
+                   style={{  width: '100%', height: '20%'}} >
+                      <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/food-menu.png?alt=media&token=b763f331-7a6b-46df-ac8f-33521735d1d4' }}
+                    style={{  width: '100%', height: '100%'}} />
+                     
+                 </TouchableOpacity>
+                 
+                 <TouchableOpacity onPress={() => navigation.push('boss',{key:this.state.dataSource})} I  
+                   style={{  width: '100%', height: '20%'}} >
+                      <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/exercise-menu.png?alt=media&token=811541d7-af20-4193-8709-7618eabb7fea' }}
+                    style={{  width: '100%', height: '100%'}} />
+                     <Text></Text>
+                 </TouchableOpacity>
+                 <TouchableOpacity onPress={() => navigation.navigate('palm')} I  
+                   style={{  width: '100%', height: '20%'}} >
+                      <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/overview-menu.png?alt=media&token=ec3fda6a-b314-4205-b2bd-35bb3cdd97d9' }}
+                    style={{  width: '100%', height: '100%'}} />
+                    
+                    <Text></Text>
+                 </TouchableOpacity>
+                 <TouchableOpacity onPress={() => navigation.push('loadlist')} I  
+                   style={{  width: '100%', height: '20%'}} >
+                      <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/hazelnutgamestore.appspot.com/o/history-menu.png?alt=media&token=b83f4a09-06cc-4e6a-aca6-3ff079aa9196' }}
+                    style={{  width: '100%', height: '100%'}} />
+                     <Text></Text>
+                 </TouchableOpacity>
+                
+              </View>
+
+      </>      
     );
   }
   load_list({ navigation }){
@@ -299,7 +297,7 @@ componentDidMount() {
     AsyncStorage.getItem("a").then(val => {
       
       this.setState({lists: JSON.parse(val)});
-      navigation.replace('Alltime')
+      navigation.replace('history')
     });
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -308,18 +306,24 @@ componentDidMount() {
       );
   }
   Alltime({ navigation }) {
-   
+    var statenow = {high:this.state.high, weight:this.state.weight, 
+                    age:this.state.age, water:this.state.water ,
+                    BMR:this.state.BMR, BMI:this.state.BMI };
     return (
+      <ScrollView>
       <View style={styles.container}>
         <Button title="clear" onPress={() => navigation.navigate("clear")} />
         <FlatList
           data={this.state.lists}
-          renderItem={({item}) => <Button title={new Date(item)+""} onPress={() => navigation.navigate('compare', { key: new Date(item)+"" })} />}
+          renderItem={({item}) => <Button title={new Date(item)+""} onPress={() => navigation.navigate('loadcompare', { key: new Date(item)+"",now:statenow })} />}
         />
+        <Text>  </Text>
       </View>
+      
+      </ScrollView>
     );
   }
-  Profile({ navigation }) {
+  Profile({}) {
     
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -336,24 +340,8 @@ componentDidMount() {
       </View>
     );
   }
-  compare({ navigation ,route}) {
-    
-    var temp = route.params?.key
-    
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text> Current     Old</Text>
-        <Text> High  {this.state.high}  {temp.high}  </Text>
-        <Text> Weight  {this.state.weight}  {temp.weight}  </Text>
-        <Text> Age  {this.state.age}  {temp.age}  </Text>
-        <Text> BMR  {this.state.BMR}  {temp.BMR}  </Text>
-        <Text> BMI  {this.state.BMI}  {temp.BMI}  </Text>
-        <Text> water  {this.state.water}  {temp.water}  </Text>
-        
-      </View>
-      );
-  }
   
+ 
   DetailsScreen({ navigation }) {
     return (
       <View style={styles.container}>
@@ -433,7 +421,7 @@ componentDidMount() {
  
   render() {
     // LOAD API just wait
-    if(this.state.loading&this.state.foodLoad){
+    if(this.state.loading){
       return(
         <View>
             <ActivityIndicator />
@@ -450,21 +438,23 @@ componentDidMount() {
         <Stack.Screen name="Home" component={this.HomeScreen} />
         <Stack.Screen name="Details" component={this.DetailsScreen} />
         <Stack.Screen name="Profile" component={this.Profile} />
-        <Stack.Screen name="Alltime" component={this.Alltime} />
-        <Stack.Screen name="compare2" component={this.compare} />
-
+        
+        
         {/* diamond */}
-        <Stack.Screen name="compare" component={diamond.diamond.compare} />
+        <Stack.Screen name="history" component={this.Alltime} />
+        <Stack.Screen name="loadcompare" component={diamond.diamond.loadcompare} />
         <Stack.Screen name="clear" component={diamond.diamond.clear} />
+        <Stack.Screen name="compare" component={diamond.diamond.compare} />
 
         {/* ben */}
         <Stack.Screen name="ben" component={ben.ben.HomeScreen} />
-        <Stack.Screen name="ben_food" component={ben.ben.FoodScreen} />
-        <Stack.Screen name="ben_detail" component={ben.ben.FoodDetail} />
 
         {/* boss */}
         
         <Stack.Screen name="boss" component={boss.boss.boss} />
+        {/*Palm Page */}
+
+        <Stack.Screen name="palm" component={palm.palm.HomeScreen} />
        
         
         
