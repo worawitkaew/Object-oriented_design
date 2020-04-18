@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 
 
 import React from 'react';
-import {  Text, View, Image, ScrollView,  TouchableOpacity} from 'react-native';
+import {  Text, View, Image, ScrollView,  TouchableOpacity, TextInput} from 'react-native';
 
 class calculator extends React.Component {
     HomeScreen({ navigation }) {
@@ -19,7 +19,7 @@ class calculator extends React.Component {
                 </TouchableOpacity>
               </View>
               <Text style={{
-                color: 'black',
+                colors: 'black',
                 fontWeight: 'bold',
                 fontSize: 40,
                 backgroundColor: '#d7d5d2',
@@ -61,11 +61,11 @@ class calculator extends React.Component {
       
               <View style={{ width: 50, height: 50, backgroundColor: 'white', position: 'absolute', alignSelf: 'flex-end', top: 500, right: 20 }} >
                 
-                <TouchableOpacity onPress={() => navigation.navigate('Details')}>
+                <TouchableOpacity onPress={() => navigation.navigate('ben_food')}>
                   <Image
                     source={{ uri: 'https://reactnative.dev/docs/assets/p_cat1.png' }}
                     // style={{ width: 50, height: 50, backgroundColor:'white', position:'absolute',alignSelf:'flex-end',top:500,right:20}} />
-                    style={{  width: 60, height: 50}} />
+                    style={{ width: 50, height: 50 }} />
                 </TouchableOpacity>
               </View>
       
@@ -101,15 +101,42 @@ class calculator extends React.Component {
         );
       }
       
-    DetailsScreen() {
-        return (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Details Screen</Text>
-          </View>
-        );
+    FoodScreen({navigation,route}) {
+      let food =route.params?.key.map((val,key)=>{
+        return <View key={key} style={{paddingVertical: 4,
+          margin: 10,
+          backgroundColor: "#fff",
+          height: 44,}}><Text>{val.description}</Text></View>
+      })
+      return (
+        <View style={{flex: 1,
+          height:25,
+          backgroundColor: "#fff",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          paddingTop: 22,
+          paddingLeft: 40,}}>
+          <Text style={{ fontSize: 20}}>
+            Search
+          </Text>
+          <TextInput
+              style={{ height: 30, borderColor: 'gray', borderWidth: 1, width: 200 ,position:'absolute', right:80, top:22}}
+            />
+          <ScrollView>
+            {food}
+          </ScrollView>
+        </View>
+            );
       }
+    FoodDetail({navigation,route}){
+      let a =route.params
+      return(
+      <View><Text>abc</Text>
+      {a}
+      </View>
+      )
+    }
 }
-
 
 const ben = new calculator(); 
 export default { ben};
